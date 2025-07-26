@@ -8,15 +8,16 @@ from wordcloud import WordCloud
 @st.cache_data
 def load_data():
     df = pd.read_csv("netflix_titles.csv")
-    
-    # Check if expected columns exist
+
+    # Only drop columns that exist
     required_columns = ['director', 'cast', 'country']
-    missing = [col for col in required_columns if col not in df.columns]
-    if missing:
-        st.error(f"Missing columns in dataset: {missing}")
+    existing_columns = [col for col in required_columns if col in df.columns]
+    
+    if not existing_columns:
+        st.error("Required columns not found in the dataset.")
         st.stop()
 
-    df.dropna(subset=required_columns, inplace=True)
+    df.dropna(subset=existing_columns, inplace=True)
     return df
 
 # Main app
