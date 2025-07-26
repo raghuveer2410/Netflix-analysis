@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: netflix-voila-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: voila app.ipynb --port $PORT --no-browser --ip=0.0.0.0
+    plan: free
