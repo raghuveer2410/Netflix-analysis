@@ -8,14 +8,21 @@ st.set_page_config(page_title="Netflix Data Analysis", layout="wide")
 st.title("📺 Netflix Data Analysis Dashboard")
 
 @st.cache_data
+import streamlit as st
+import pandas as pd
+
+@st.cache_data
 def load_data():
     df = pd.read_csv("netflix_titles.csv")
-    df.drop_duplicates(inplace=True)
-    df.dropna(subset=['director', 'cast', 'country'], inplace=True)
-    df['date_added'] = pd.to_datetime(df['date_added'])
-    df['year_added'] = df['date_added'].dt.year
-    df['month'] = df['date_added'].dt.month
-    df['genres'] = df['listed_in'].apply(lambda x: x.split(', '))
+
+    # Check if expected columns are present
+    expected_cols = ['director', 'cast', 'country']
+    missing_cols = [col for col in expected_cols if col not in df.columns]
+    if missing_cols:
+        st.error(f"Missing columns in dataset: {missing_cols}")
+        st.stop()
+
+    df.dropna(subset=expected_cols, inplace=True)
     return df
 
 # Load data
